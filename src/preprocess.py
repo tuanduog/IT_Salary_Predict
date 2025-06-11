@@ -2,8 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
 def clean_data(df):
-    # Xoa cac gia tri khuyet
-    df = df.dropna()
+    # xoa cac gia tri  trung
     df = df.drop_duplicates()
 
     keep_columns = [
