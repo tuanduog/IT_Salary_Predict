@@ -11,12 +11,12 @@ def clean_data(df):
         'salary_in_usd', 'employee_residence', 'remote_ratio',
         'company_location', 'company_size'
     ]
-
+    
     df = df[keep_columns]
 
     return df
 
-def encode_features(df: pd.DataFrame, encoder: OneHotEncoder = None, fit_encoder=True):
+def encode_features(df, encoder: OneHotEncoder = None, fit_encoder=True):
     categorical_cols = [
         'experience_level', 'employment_type', 'job_title',
         'employee_residence', 'company_location', 'company_size'
@@ -24,7 +24,7 @@ def encode_features(df: pd.DataFrame, encoder: OneHotEncoder = None, fit_encoder
     X_cat = df[categorical_cols]
 
     if fit_encoder:
-        encoder = OneHotEncoder(handle_unknown='ignore', sparse=False)
+        encoder = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
         X_encoded = encoder.fit_transform(X_cat)
     else:
         X_encoded = encoder.transform(X_cat)
@@ -38,7 +38,7 @@ def encode_features(df: pd.DataFrame, encoder: OneHotEncoder = None, fit_encoder
     X = pd.concat([X_numeric, encoded_df], axis=1)
     return X, encoder
 
-def select_features(df: pd.DataFrame):
+def select_features(df):
     X = df.drop('salary_in_usd', axis=1)
     y = df['salary_in_usd']
     return X, y
