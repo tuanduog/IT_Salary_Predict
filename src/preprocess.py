@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder
 
@@ -12,6 +13,8 @@ def clean_data(df):
     ]
     
     df = df[keep_columns]
+    # Loại bỏ outlier lương quá cao
+    df = df[df['salary_in_usd'] <= 350000]
 
     return df
 
@@ -41,4 +44,6 @@ def select_features(df):
     X = df.drop('salary_in_usd', axis=1)
     y = df['salary_in_usd']
     return X, y
+
+
     

@@ -37,4 +37,3 @@ def train_and_save_model(X, y, encoder, model_path='model.pkl', encoder_path='en
     joblib.dump(model, model_path)
     joblib.dump(encoder, encoder_path)
     print("Model and encoder saved successfully.")
-
