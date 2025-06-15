@@ -4,16 +4,16 @@ import joblib
 import sys
 from pathlib import Path
 
-# Thêm thư mục gốc vào PYTHONPATH
+# Add project root to PYTHONPATH
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from src.preprocess import encode_features
 
-# --- CẤU HÌNH TRANG ---
-st.set_page_config(page_title="Dự báo lương IT", layout="centered")
-st.title("PHÂN TÍCH DỰ BÁO MỨC LƯƠNG NGÀNH IT")
-st.markdown("""*Sử dụng mô hình Hồi quy Tuyến tính*""")
+# --- PAGE CONFIG ---
+st.set_page_config(page_title="IT Salary Prediction", layout="centered")
+st.title("IT SALARY PREDICTION ANALYSIS")
+st.markdown("*Using Linear Regression Model*")
 
 # --- LOAD MODEL ---
 @st.cache_resource
@@ -23,82 +23,126 @@ def load_model():
         encoder = joblib.load('notebook/encoder.pkl')
         return model, encoder
     except Exception as e:
-        st.error(f"Lỗi khi tải model: {str(e)}")
+        st.error(f"Error loading model: {str(e)}")
         return None, None
 
 model, encoder = load_model()
 
-# --- USE CASE 1: NHẬP DỮ LIỆU ---
+# --- USE CASE 1: INPUT FORM ---
 with st.form(key="salary_prediction_form"):
-    st.subheader("1. Nhập thông tin dự báo")
+    st.subheader("Enter Prediction Information")
 
     col1, col2 = st.columns(2)
 
     with col1:
         work_year = st.number_input(
-            "Năm làm việc*",
+            "Working Year*",
             min_value=2020,
             max_value=2025,
             value=2024,
             key="work_year_input"
         )
         remote_ratio = st.selectbox(
-            "Tỷ lệ làm việc từ xa*",
+            "Remote Work Ratio*",
             options=["0", "50", "100"],
             index=1,
             key="remote_ratio_select"
         )
 
     with col2:
-        experience_level = st.selectbox(
-            "Trình độ kinh nghiệm*",
-            options=["EN", "MI", "SE", "EX"],
+        # Label-value mapping
+        experience_options = {
+            "Fresher (EN)": "EN",
+            "Junior (MI)": "MI",
+            "Senior (SE)": "SE",
+            "Executive (EX)": "EX"
+        }
+
+        employment_options = {
+            "Full-time (FT)": "FT",
+            "Part-time (PT)": "PT",
+            "Contract (CT)": "CT",
+            "Freelance (FL)": "FL"
+        }
+
+        experience_label = st.selectbox(
+            "Experience Level*",
+            options=list(experience_options.keys()),
             index=2,
             key="experience_level_select"
         )
-        employment_type = st.selectbox(
-            "Loại hình làm việc*",
-            options=["FT", "PT", "CT", "FL"],
+        experience_level = experience_options[experience_label]
+
+        employment_label = st.selectbox(
+            "Employment Type*",
+            options=list(employment_options.keys()),
             key="employment_type_select"
         )
+        employment_type = employment_options[employment_label]
 
-    company_size = st.selectbox(
-        "Kích thước công ty*",
-        options=["S", "M", "L"],
+    company_size_options = {
+        "Small (S)": "S",
+        "Medium (M)": "M",
+        "Large (L)": "L"
+    }
+    company_size_label = st.selectbox(
+        "Company Size*",
+        options=list(company_size_options.keys()),
         index=1,
         key="company_size_select"
     )
+    company_size = company_size_options[company_size_label]
 
-    company_location = st.selectbox(
-        "Vị trí công ty*",
-        options=["US", "GB", "IN", "CA", "DE", "FR", "VN", "JP", "AU"],
+    country_options = {
+        "United States (US)": "US",
+        "United Kingdom (GB)": "GB",
+        "India (IN)": "IN",
+        "Canada (CA)": "CA",
+        "Germany (DE)": "DE",
+        "France (FR)": "FR",
+        "Vietnam (VN)": "VN",
+        "Japan (JP)": "JP",
+        "Australia (AU)": "AU"
+    }
+
+    company_location_label = st.selectbox(
+        "Company Location*",
+        options=list(country_options.keys()),
         index=0,
         key="company_location_select"
     )
+    company_location = country_options[company_location_label]
 
-    employee_residence = st.selectbox(
-        "Quốc gia cư trú*",
-        options=["US", "GB", "IN", "CA", "DE", "FR", "VN", "JP", "AU"],
+    employee_residence_label = st.selectbox(
+        "Employee Residence Country*",
+        options=list(country_options.keys()),
         index=0,
         key="employee_residence_select"
     )
+    employee_residence = country_options[employee_residence_label]
 
     job_title = st.selectbox(
-        "Chức danh công việc*",
-        options=["Data Engineer", "Data Scientist", "Machine Learning Engineer", "Data Analyst", "Data Architect"],
+        "Job Title*",
+        options=[
+            "Data Engineer",
+            "Data Scientist",
+            "Machine Learning Engineer",
+            "Data Analyst",
+            "Data Architect"
+        ],
         index=0,
         key="job_title_select"
     )
 
-    # --- NÚT SUBMIT ---
-    submitted = st.form_submit_button("DỰ BÁO LƯƠNG", type="primary")
-    reset = st.form_submit_button("LÀM MỚI")
+    # --- SUBMIT / RESET ---
+    submitted = st.form_submit_button("PREDICT SALARY", type="primary")
+    reset = st.form_submit_button("RESET")
 
-# --- XỬ LÝ USE CASE 2: LÀM MỚI ---
+# --- USE CASE 2: RESET ---
 if reset:
     st.rerun()
 
-# --- XỬ LÝ USE CASE 3: DỰ BÁO ---
+# --- USE CASE 3: PREDICT ---
 if submitted and model is not None:
     input_data = pd.DataFrame({
         'work_year': [work_year],
@@ -116,15 +160,15 @@ if submitted and model is not None:
         prediction = model.predict(X)[0]
         predicted_salary = round(prediction)
 
-        st.success("DỰ BÁO THÀNH CÔNG!")
+        st.success("Prediction Successful!")
         st.metric(
-            label="**Mức lương dự đoán (USD/năm)**",
+            label="**Predicted Salary (USD/year)**",
             value=f"${predicted_salary:,}",
-            delta="Kết quả ước lượng"
+            delta="Estimated result"
         )
 
-        with st.expander("📊 Xem chi tiết đầu vào"):
+        with st.expander("📊 View Input Details"):
             st.dataframe(input_data, hide_index=True)
 
     except Exception as e:
-        st.error(f"Lỗi khi dự đoán: {str(e)}")
+        st.error(f"Prediction error: {str(e)}")
