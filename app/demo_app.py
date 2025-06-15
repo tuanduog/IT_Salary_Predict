@@ -4,13 +4,13 @@ import joblib
 import sys
 from pathlib import Path
 
-# Add project root to PYTHONPATH
+# Thêm thư mục gốc vào PYTHONPATH
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
 from src.preprocess import encode_features
 
-# --- PAGE CONFIG ---
+# --- CẤU HÌNH TRANG ---
 st.set_page_config(page_title="IT Salary Prediction", layout="centered")
 st.title("IT SALARY PREDICTION ANALYSIS")
 st.markdown("*Using Linear Regression Model*")
@@ -28,7 +28,7 @@ def load_model():
 
 model, encoder = load_model()
 
-# --- USE CASE 1: INPUT FORM ---
+# --- USE CASE 1: NHẬP DỮ LIỆU ---
 with st.form(key="salary_prediction_form"):
     st.subheader("Enter Prediction Information")
 
@@ -134,15 +134,15 @@ with st.form(key="salary_prediction_form"):
         key="job_title_select"
     )
 
-    # --- SUBMIT / RESET ---
+    # --- NÚT SUBMIT / RESET ---
     submitted = st.form_submit_button("PREDICT SALARY", type="primary")
     reset = st.form_submit_button("RESET")
 
-# --- USE CASE 2: RESET ---
+# --- XỬ LÝ USE CASE 2: LÀM MỚI ---
 if reset:
     st.rerun()
 
-# --- USE CASE 3: PREDICT ---
+# --- XỬ LÝ USE CASE 3: DỰ BÁO ---
 if submitted and model is not None:
     input_data = pd.DataFrame({
         'work_year': [work_year],
