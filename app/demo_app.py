@@ -28,7 +28,23 @@ def load_model():
 
 model, encoder = load_model()
 
-# --- USE CASE 1: NHẬP DỮ LIỆU ---
+# --- ĐẶT GIÁ TRỊ MẶC ĐỊNH KHI RESET ---
+if st.session_state.get("reset_flag"):
+    default_values = {
+        "work_year_input": 2024,
+        "remote_ratio_select": "50",
+        "experience_level_select": "Senior (SE)",
+        "employment_type_select": "Full-time (FT)",
+        "company_size_select": "Medium (M)",
+        "company_location_select": "United States (US)",
+        "employee_residence_select": "United States (US)",
+        "job_title_select": "Data Engineer"
+    }
+    for key, value in default_values.items():
+        st.session_state[key] = value
+    st.session_state["reset_flag"] = False
+
+# --- FORM NHẬP LIỆU ---
 with st.form(key="salary_prediction_form"):
     st.subheader("Enter Prediction Information")
 
@@ -39,25 +55,23 @@ with st.form(key="salary_prediction_form"):
             "Working Year*",
             min_value=2020,
             max_value=2025,
-            value=2024,
+            value=st.session_state.get("work_year_input", 2024),
             key="work_year_input"
         )
         remote_ratio = st.selectbox(
             "Remote Work Ratio*",
             options=["0", "50", "100"],
-            index=1,
+            index=["0", "50", "100"].index(st.session_state.get("remote_ratio_select", "50")),
             key="remote_ratio_select"
         )
 
     with col2:
-        # Label-value mapping
         experience_options = {
             "Fresher (EN)": "EN",
             "Junior (MI)": "MI",
             "Senior (SE)": "SE",
             "Executive (EX)": "EX"
         }
-
         employment_options = {
             "Full-time (FT)": "FT",
             "Part-time (PT)": "PT",
@@ -68,7 +82,9 @@ with st.form(key="salary_prediction_form"):
         experience_label = st.selectbox(
             "Experience Level*",
             options=list(experience_options.keys()),
-            index=2,
+            index=list(experience_options.keys()).index(
+                st.session_state.get("experience_level_select", "Senior (SE)")
+            ),
             key="experience_level_select"
         )
         experience_level = experience_options[experience_label]
@@ -76,6 +92,9 @@ with st.form(key="salary_prediction_form"):
         employment_label = st.selectbox(
             "Employment Type*",
             options=list(employment_options.keys()),
+            index=list(employment_options.keys()).index(
+                st.session_state.get("employment_type_select", "Full-time (FT)")
+            ),
             key="employment_type_select"
         )
         employment_type = employment_options[employment_label]
@@ -88,7 +107,9 @@ with st.form(key="salary_prediction_form"):
     company_size_label = st.selectbox(
         "Company Size*",
         options=list(company_size_options.keys()),
-        index=1,
+        index=list(company_size_options.keys()).index(
+            st.session_state.get("company_size_select", "Medium (M)")
+        ),
         key="company_size_select"
     )
     company_size = company_size_options[company_size_label]
@@ -108,7 +129,9 @@ with st.form(key="salary_prediction_form"):
     company_location_label = st.selectbox(
         "Company Location*",
         options=list(country_options.keys()),
-        index=0,
+        index=list(country_options.keys()).index(
+            st.session_state.get("company_location_select", "United States (US)")
+        ),
         key="company_location_select"
     )
     company_location = country_options[company_location_label]
@@ -116,7 +139,9 @@ with st.form(key="salary_prediction_form"):
     employee_residence_label = st.selectbox(
         "Employee Residence Country*",
         options=list(country_options.keys()),
-        index=0,
+        index=list(country_options.keys()).index(
+            st.session_state.get("employee_residence_select", "United States (US)")
+        ),
         key="employee_residence_select"
     )
     employee_residence = country_options[employee_residence_label]
@@ -130,7 +155,13 @@ with st.form(key="salary_prediction_form"):
             "Data Analyst",
             "Data Architect"
         ],
-        index=0,
+        index=[
+            "Data Engineer",
+            "Data Scientist",
+            "Machine Learning Engineer",
+            "Data Analyst",
+            "Data Architect"
+        ].index(st.session_state.get("job_title_select", "Data Engineer")),
         key="job_title_select"
     )
 
@@ -138,11 +169,12 @@ with st.form(key="salary_prediction_form"):
     submitted = st.form_submit_button("PREDICT SALARY", type="primary")
     reset = st.form_submit_button("RESET")
 
-# --- XỬ LÝ USE CASE 2: LÀM MỚI ---
+# --- XỬ LÝ RESET ---
 if reset:
+    st.session_state["reset_flag"] = True
     st.rerun()
 
-# --- XỬ LÝ USE CASE 3: DỰ BÁO ---
+# --- XỬ LÝ DỰ BÁO ---
 if submitted and model is not None:
     input_data = pd.DataFrame({
         'work_year': [work_year],
