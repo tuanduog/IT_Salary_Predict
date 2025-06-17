@@ -56,12 +56,13 @@ def create_form():
 
             # Remote Ratio selectbox
             remote_ratio_options = ["---", "0", "50", "100"]
-            remote_ratio = st.selectbox(
+            remote_ratio_label = st.selectbox(
                 "Remote Work Ratio*",
                 options=remote_ratio_options,
                 index=0,
                 key=f"remote_ratio_{st.session_state.form_key}"
             )
+            remote_ratio = int(remote_ratio_label) if remote_ratio_label != "---" else None
 
         with col2:
             # Experience Level selectbox
@@ -182,7 +183,7 @@ if submitted and model is not None and encoder is not None and scaler is not Non
             'employment_type': [form_data['employment_type']],
             'job_title': [form_data['job_title']],
             'employee_residence': [form_data['employee_residence']],
-            'remote_ratio': [int(form_data['remote_ratio'])],
+            'remote_ratio': [form_data['remote_ratio']],
             'company_location': [form_data['company_location']],
             'company_size': [form_data['company_size']]
         })
