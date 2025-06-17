@@ -17,7 +17,7 @@ Sau đó để khởi chạy ứng dụng
 streamlit run app/demo_app.py
 ```
 ## 📁 Cấu trúc dự án
-<img src="image/structure.png" width="500"/>
+<img src="image/structure.png"/>
 
 ## 📊 Thông tin ứng dụng
 ### Mô hình
