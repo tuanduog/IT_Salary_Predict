@@ -21,36 +21,31 @@ streamlit run app/demo_app.py
 
 ## 📊 Thông tin ứng dụng
 ### Mô hình
-Mô hình chính: Linear Regression
+- Mô hình chính: Linear Regression
 
-Cải tiến: thử nghiệm với các biến đầu vào đã chuẩn hóa và mã hóa
+- Cải tiến: thử nghiệm với các biến đầu vào đã chuẩn hóa và mã hóa
 
-Mã hóa đặc trưng: OneHotEncoder, chuẩn hóa: StandardScaler
+- Mã hóa đặc trưng: OneHotEncoder, chuẩn hóa: StandardScaler
 
-Hiệu suất mô hình đánh giá bằng: R², RMSE
+- Hiệu suất mô hình đánh giá bằng: R², RMSE
 
 ### Dữ liệu
-Nguồn: Kaggle — Data Developer Salaries 2024
+- Nguồn: Kaggle — Data Developer Salaries 2024
 
-Các đặc trưng bao gồm:
+- Các đặc trưng bao gồm:
 
-work_year, experience_level, employment_type
+    work_year, experience_level, employment_type
 
-job_title, remote_ratio, company_location
+    job_title, remote_ratio, company_location
 
-salary_in_usd, ...
+    salary_in_usd, ...
 
 ### Kết quả
-Mô hình có thể dự đoán mức lương tương đối sát so với thực tế.
+- Mô hình có thể dự đoán mức lương tương đối sát so với thực tế.
 
-Streamlit UI giúp người dùng dễ dàng nhập thông tin và xem kết quả dự đoán.
+- Streamlit UI giúp người dùng dễ dàng nhập thông tin và xem kết quả dự đoán.
 
 ### 🛠 Công nghệ sử dụng
-Ngôn ngữ: Python
-
-Thư viện
-- pandas, numpy
-
-- scikit-learn
-
-Framework: Streamlit
+- Ngôn ngữ: Python
+- Thư viện: pandas, numpy, scikit-learn
+- Framework: Streamlit
